@@ -43,6 +43,12 @@ def fillingquotation(request):
     user_id  = request.user.id
     staff = Person.objects.get(user_id = user_id)
     try: 
+        if RequestForQuotation.objects.get(request_for_quotation_id = re_of_quo_id) is not None:
+                context = {
+                   'error': 'Quotation Existed',
+                   'title': 'Quotation Form'
+                }
+                return render(request,'Quotation/quotationform.html',context)
         request_for_quotations = RequestForQuotation.objects.get(request_for_quotation_id = re_of_quo_id)
         item_list = RequestForQuotationItem.objects.filter(request_for_quotation_id = re_of_quo_id)
         context = {
