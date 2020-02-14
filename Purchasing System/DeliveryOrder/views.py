@@ -44,18 +44,26 @@ def fillingdeliveryorder(request):
     try: 
         po = PurchaseOrder.objects.get(purchase_order_id = pur_id)
         item_list = PurchaseOrderItem.objects.filter(purchase_order_id = pur_id)
-        context = {
-                'title': 'Delivery Order Form',
-                'delivery_order_id': 'DO' + str(do_id),
-                'purchase_order_id': pur_id, 
-                'staff_id' : staff.person_id,
-                'vendor_id': po.vendor_id.vendor_id,
-                'rows':item_list
-            }
+        try:
+          if DeliveryOrder.objects.get(purchase_order_id = pur_id) is not None:
+                context = {
+                   'error': 'Delivery Order Existed',
+                   'title': 'Delivery Order Form'
+                }
+                return render(request,'DeliveryOrder/deliveryorderform.html',context)
+        except:
+            context = {
+                    'title': 'Delivery Order Form',
+                    'delivery_order_id': 'DO' + str(do_id),
+                    'purchase_order_id': pur_id, 
+                    'staff_id' : staff.person_id,
+                    'vendor_id': po.vendor_id.vendor_id,
+                    'rows':item_list
+                }
 
         return render(request,'DeliveryOrder/deliveryorderform.html',context)
 
-    except PurchaseOrder.DoesNotExist:
+    except DeliveryOrder.DoesNotExist:
 
         context = { 'error': 'The quotation id is invalid !',
                     'title': 'Delivery Order Form'
