@@ -40,14 +40,24 @@ def fillinginvoice(request):
     context = {}
     pur_id = request.GET['pur_id']
     inv_id = random.randint(1000000,9999999)
+    user_id = request.user.id
+    staff = Person.objects.get(user_id = user_id)
     try: 
         purchase_orders = PurchaseOrder.objects.get(purchase_order_id = pur_id)
         item_list = PurchaseOrderItem.objects.filter(purchase_order_id = pur_id)
-        context = {
+        try:
+            if Invoice.objects.get(purchase_order_id = pur_id) is not None:
+                context = {
+                   'error': 'Invoice Existed',
+                   'title': 'Invoice Form',
+                }
+            return render(request,'Invoice/invoiceform.html',context)
+        except:
+            context = {
                 'title': 'Invoice Form',
                 'invoice_id': 'INV' + str(inv_id),
-                'purchase_order_id': inv_id, 
-                'staff_id' : purchase_orders.person_id.person_id,
+                'purchase_order_id': pur_id, 
+                'staff_id' : staff.person_id,
                 'vendor_id': purchase_orders.vendor_id.vendor_id,
                 'rows':item_list
             }
@@ -55,11 +65,11 @@ def fillinginvoice(request):
         responsesItems = render(request,'Invoice/invoiceform.html',context).content
         return render(request,'Invoice/invoiceform.html',context)
 
-    except Invoice.DoesNotExist:
+    except PurchaseOrder.DoesNotExist:
 
         context = { 'error': 'The invoice id is invalid !',
                     'title': 'Invoice Form'
-            }
+        }
         return render(request,'Invoice/invoiceform.html',context)
 
 def invoiceconfirmation(request):
@@ -134,7 +144,7 @@ def invoicedetails(request):
     staff_id = request.POST['staff_id']
     vendor_id = request.POST['vendor_id']
     description = request.POST['description']
-    purchaseorder = get_object_or_404(PurchaseOrder)
+    purchaseorder = PurchaseOrder.objects.get(purchase_order_id = purchase_order_id)
     staff_info = Person.objects.get(person_id = staff_id)
     vendor_info = Vendor.objects.get(vendor_id = vendor_id)
 
