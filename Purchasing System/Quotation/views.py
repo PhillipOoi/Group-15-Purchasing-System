@@ -43,22 +43,24 @@ def fillingquotation(request):
     user_id  = request.user.id
     staff = Person.objects.get(user_id = user_id)
     try: 
-        if RequestForQuotation.objects.get(request_for_quotation_id = re_of_quo_id) is not None:
-                context = {
-                   'error': 'Quotation Existed',
-                   'title': 'Quotation Form'
-                }
-                return render(request,'Quotation/quotationform.html',context)
         request_for_quotations = RequestForQuotation.objects.get(request_for_quotation_id = re_of_quo_id)
         item_list = RequestForQuotationItem.objects.filter(request_for_quotation_id = re_of_quo_id)
-        context = {
-                'title': 'Quotation Form',
-                'quotation_id': 'QUO' + str(quo_id),
-                'request_for_quotation_id': re_of_quo_id, 
-                'staff_id' : staff.person_id,
-                'vendor_id': request_for_quotations.vendor_id.vendor_id,
-                'rows':item_list
-            }
+        try:
+            if Quotation.objects.get(request_for_quotation_id = re_of_quo_id) is not None:
+                    context = {
+                       'error': 'Quotation Existed',
+                       'title': 'Quotation Form'
+                    }
+                    return render(request,'Quotation/quotationform.html',context)
+        except:
+            context = {
+                    'title': 'Quotation Form',
+                    'quotation_id': 'QUO' + str(quo_id),
+                    'request_for_quotation_id': re_of_quo_id, 
+                    'staff_id' : staff.person_id,
+                    'vendor_id': request_for_quotations.vendor_id.vendor_id,
+                    'rows':item_list
+                }
         return render(request,'Quotation/quotationform.html',context)
 
     except RequestForQuotation.DoesNotExist:
