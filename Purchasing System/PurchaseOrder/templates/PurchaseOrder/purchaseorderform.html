@@ -6,7 +6,7 @@
 
         <div class="input-group mb-3">
           <input type="text" class="form-control" name="quo_id" id="quo_id" placeholder="Quotation ID" aria-label="Quotation ID"
-            aria-describedby="button-addon2" required>
+            aria-describedby="button-addon2" required >
           <div class="input-group-append">
            <button type="submit" class="btn btn-outline-info btn-hover btn-rounded waves-effect">Find</button>
           </div>
@@ -20,7 +20,7 @@
         {% csrf_token %}
         <div class="row margintop">
             <div class="col">
-                <input type="text" class="form-control" name="purchase_order_id" value="{{purchase_order_id}}" placeholder="Purchase Order ID" required>
+                <input type="text" class="form-control" name="purchase_order_id" value="{{purchase_order_id}}" placeholder="Purchase Order ID" required >
             </div><p>
             <div class="col">
                 <textarea type="text" class="poform-control" name="quotation_id" placeholder="Quotation ID" readonly>{{quotation_id}}</textarea>
